@@ -1,0 +1,69 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spark-insights"
+version = "0.2.0"
+description = "Local-first, reproducible assisted data analysis"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+dependencies = [
+  "pandas>=2.2,<3",
+  "numpy>=1.26,<3",
+  "scikit-learn>=1.5,<2",
+  "openpyxl>=3.1,<4",
+]
+
+[project.optional-dependencies]
+providers = [
+  "anthropic>=0.75,<1",
+  "google-genai>=1.0,<2",
+  "openai>=2.0,<3",
+]
+report = ["python-pptx>=1.0,<2"]
+dev = [
+  "build>=1.2,<2",
+  "hatchling>=1.27,<2",
+  "mypy>=1.15,<2",
+  "pandas-stubs>=2.2,<3",
+  "pytest>=8.3,<9",
+  "pytest-cov>=6,<7",
+  "ruff>=0.11,<1",
+]
+
+[project.scripts]
+spark-insights = "spark_insights.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/spark_insights"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["legacy", "tools"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/spark_insights/reporting.py" = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+packages = ["spark_insights"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = ["anthropic", "google", "google.*", "openai", "openpyxl", "pandas", "sklearn.*", "pptx.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "-q --strict-markers --disable-warnings"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["spark_insights"]
+
