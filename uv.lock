@@ -2020,15 +2020,6 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-dev = [
-    { name = "build" },
-    { name = "hatchling" },
-    { name = "mypy" },
-    { name = "pandas-stubs" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-]
 providers = [
     { name = "anthropic" },
     { name = "google-genai" },
@@ -2038,25 +2029,40 @@ report = [
     { name = "python-pptx" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "build" },
+    { name = "hatchling" },
+    { name = "mypy" },
+    { name = "pandas-stubs" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "anthropic", marker = "extra == 'providers'", specifier = ">=0.75,<1" },
-    { name = "build", marker = "extra == 'dev'", specifier = ">=1.2,<2" },
     { name = "google-genai", marker = "extra == 'providers'", specifier = ">=1.0,<2" },
-    { name = "hatchling", marker = "extra == 'dev'", specifier = ">=1.27,<2" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.15,<2" },
     { name = "numpy", specifier = ">=1.26,<3" },
     { name = "openai", marker = "extra == 'providers'", specifier = ">=2.0,<3" },
     { name = "openpyxl", specifier = ">=3.1,<4" },
     { name = "pandas", specifier = ">=2.2,<3" },
-    { name = "pandas-stubs", marker = "extra == 'dev'", specifier = ">=2.2,<3" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3,<9" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=6,<7" },
     { name = "python-pptx", marker = "extra == 'report'", specifier = ">=1.0,<2" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.11,<1" },
     { name = "scikit-learn", specifier = ">=1.5,<2" },
 ]
-provides-extras = ["providers", "report", "dev"]
+provides-extras = ["providers", "report"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "build", specifier = ">=1.2,<2" },
+    { name = "hatchling", specifier = ">=1.27,<2" },
+    { name = "mypy", specifier = ">=1.15,<2" },
+    { name = "pandas-stubs", specifier = ">=2.2,<3" },
+    { name = "pytest", specifier = ">=8.3,<9" },
+    { name = "pytest-cov", specifier = ">=6,<7" },
+    { name = "ruff", specifier = ">=0.11,<1" },
+]
 
 [[package]]
 name = "tenacity"

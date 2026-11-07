@@ -23,6 +23,8 @@ providers = [
   "openai>=2.0,<3",
 ]
 report = ["python-pptx>=1.0,<2"]
+
+[dependency-groups]
 dev = [
   "build>=1.2,<2",
   "hatchling>=1.27,<2",

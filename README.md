@@ -97,7 +97,7 @@ The former unrestricted Smolagents implementation is isolated under `legacy/` an
 ## Development
 
 ```bash
-uv sync --extra dev --extra providers
+uv sync --group dev --extra providers
 .venv/Scripts/python -m pytest  # Windows
 .venv/Scripts/ruff check .
 .venv/Scripts/mypy src
