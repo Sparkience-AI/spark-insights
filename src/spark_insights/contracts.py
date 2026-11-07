@@ -78,6 +78,7 @@ class AnalysisResult:
     profile: DatasetProfile
     metrics: tuple[MetricResult, ...] = ()
     warnings: tuple[Warning, ...] = ()
+    limitations: tuple[str, ...] = ()
     model_name: str | None = None
     split_strategy: str | None = None
 

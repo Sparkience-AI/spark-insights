@@ -32,3 +32,11 @@ def test_provider_failure_uses_stable_exit_and_message(monkeypatch, capsys, tmp_
     assert captured.err.strip() == "Provider failed: cloud narration request failed"
     assert "secret-key" not in captured.err
     assert "private" not in captured.err
+
+
+def test_missing_input_returns_controlled_exit(capsys, tmp_path: Path) -> None:
+    code = cli.main([str(tmp_path / "missing.csv"), "--allowed-root", str(tmp_path)])
+    captured = capsys.readouterr()
+    assert code == cli.EXIT_INPUT
+    assert "must exist" in captured.err
+    assert "Traceback" not in captured.err

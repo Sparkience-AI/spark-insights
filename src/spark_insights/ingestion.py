@@ -30,8 +30,11 @@ class IngestedDataset:
 
 
 def _resolve_bounded(path: Path, allowed_root: Path) -> Path:
-    root = allowed_root.resolve(strict=True)
-    source = path.resolve(strict=True)
+    try:
+        root = allowed_root.resolve(strict=True)
+        source = path.resolve(strict=True)
+    except OSError as exc:
+        raise IngestionError("Allowed root and input file must exist and be accessible") from exc
     if source != root and root not in source.parents:
         raise IngestionError("Input must be inside the configured allowed root")
     if not source.is_file():
@@ -53,10 +56,16 @@ def load_dataset(
     suffix = source.suffix.lower()
     if suffix not in {".csv", ".xlsx"}:
         raise IngestionError("Only CSV and XLSX files are supported")
-    size = source.stat().st_size
+    try:
+        size = source.stat().st_size
+    except OSError as exc:
+        raise IngestionError("Input metadata could not be read") from exc
     if size <= 0 or size > limits.max_bytes:
         raise IngestionError(f"Input size must be between 1 and {limits.max_bytes} bytes")
-    source_bytes = source.read_bytes()
+    try:
+        source_bytes = source.read_bytes()
+    except OSError as exc:
+        raise IngestionError("Input bytes could not be read") from exc
     if len(source_bytes) != size or len(source_bytes) > limits.max_bytes:
         raise IngestionError("Input changed while it was being read")
     digest = hashlib.sha256(source_bytes).hexdigest()

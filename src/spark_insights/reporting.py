@@ -34,6 +34,7 @@ def write_html_report(result: AnalysisResult, destination: Path) -> None:
         )
         or "<li>None recorded.</li>"
     )
+    limitations = "".join(f"<li>{escape(item)}</li>" for item in result.limitations)
     column_rows = "".join(
         "<tr>"
         f"<td>{escape(column.name)}</td><td>{escape(column.dtype)}</td>"
@@ -50,7 +51,8 @@ table{{border-collapse:collapse;width:100%}}th,td{{border:1px solid #ccd3df;padd
 </style></head><body><main><h1>Spark Insights analysis report</h1>
 <p>Task: <strong>{escape(result.task_type)}</strong>. Rows: {result.profile.row_count}. Columns: {result.profile.column_count}. Duplicate rows: {result.profile.duplicate_row_count}.</p>
 <h2>Validated metric comparison</h2>{_metric_chart(result)}
-<h2>Warnings and limitations</h2><ul>{warnings}</ul>
+<h2>Warnings</h2><ul>{warnings}</ul>
+<h2>Limitations</h2><ul>{limitations}</ul>
 <h2>Schema profile</h2><table><thead><tr><th>Column</th><th>Type</th><th>Missing</th><th>Unique</th></tr></thead><tbody>{column_rows}</tbody></table>
 <p>This report contains computed aggregates, not causal conclusions or automated business recommendations.</p>
 </main></body></html>"""

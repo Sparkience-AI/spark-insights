@@ -49,6 +49,7 @@ def safe_summary(result: AnalysisResult) -> dict[str, Any]:
             for item in result.metrics
         ],
         "warnings": [{"code": item.code, "message": item.message} for item in result.warnings],
+        "limitations": list(result.limitations),
     }
 
 

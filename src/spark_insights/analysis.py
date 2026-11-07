@@ -140,7 +140,15 @@ def analyze(frame: pd.DataFrame, task: TaskSpec) -> AnalysisResult:
     _validate_task(frame, task)
     profile = profile_dataset(frame)
     if task.task_type == "profile":
-        return AnalysisResult(task_type="profile", target=None, profile=profile)
+        return AnalysisResult(
+            task_type="profile",
+            target=None,
+            profile=profile,
+            limitations=(
+                "Profiling describes this dataset only and does not establish causes.",
+                "Aggregate checks do not prove semantic correctness or fitness for a decision.",
+            ),
+        )
 
     x_train, x_test, y_train, y_test, split_strategy = _split(frame, task)
     if len(y_train) < 10:
@@ -192,6 +200,15 @@ def analyze(frame: pd.DataFrame, task: TaskSpec) -> AnalysisResult:
         profile=profile,
         metrics=metrics,
         warnings=tuple(warnings),
+        limitations=(
+            "Holdout performance may not generalize to future or different populations.",
+            "The registered model captures associations and does not establish causality.",
+            (
+                "Accuracy can be misleading for imbalanced classes."
+                if task.task_type == "classification"
+                else "Mean absolute error must be interpreted in the declared target units."
+            ),
+        ),
         model_name=model_name,
         split_strategy=split_strategy,
     )

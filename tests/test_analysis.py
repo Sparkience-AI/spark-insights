@@ -23,6 +23,7 @@ def test_profile_is_aggregate_only() -> None:
     assert result.profile.row_count == 60
     assert result.metrics == ()
     assert result.target is None
+    assert result.limitations
 
 
 def test_regression_uses_time_holdout_and_beats_baseline() -> None:
@@ -33,6 +34,7 @@ def test_regression_uses_time_holdout_and_beats_baseline() -> None:
     assert result.split_strategy == "ordered_holdout"
     assert result.metrics[0].value < result.metrics[0].baseline_value
     assert result.model_name == "linear_regression"
+    assert "causality" in " ".join(result.limitations)
 
 
 def test_classification_is_seed_deterministic() -> None:

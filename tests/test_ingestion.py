@@ -42,3 +42,10 @@ def test_only_csv_and_xlsx_are_supported(tmp_path: Path) -> None:
     source.write_bytes(b"not-a-workbook")
     with pytest.raises(IngestionError, match="CSV and XLSX"):
         load_dataset(source, allowed_root=tmp_path)
+
+
+def test_missing_root_and_input_are_controlled_errors(tmp_path: Path) -> None:
+    with pytest.raises(IngestionError, match="must exist"):
+        load_dataset(tmp_path / "missing.csv", allowed_root=tmp_path)
+    with pytest.raises(IngestionError, match="must exist"):
+        load_dataset(tmp_path / "missing.csv", allowed_root=tmp_path / "missing-root")
