@@ -53,7 +53,7 @@ select = ["E", "F", "I", "B", "UP", "RUF"]
 "src/spark_insights/reporting.py" = ["E501"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 strict = true
 packages = ["spark_insights"]
 mypy_path = "src"
