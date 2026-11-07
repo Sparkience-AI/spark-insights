@@ -1,0 +1,20 @@
+# Spark Insights
+
+> Local-first, reproducible assisted CSV/XLSX analysis with deterministic baselines and optional aggregate-only AI narration.
+
+Canonical repository: https://github.com/Sparkience-AI/spark-insights
+Status: alpha
+License: MIT
+
+Supported: bounded local profiling, explicit linear regression/logistic classification, seeded or ordered holdout, baseline comparison, JSON/HTML evidence, Gemini/OpenAI/Anthropic BYOK narration after consent.
+
+Not supported: autonomous code execution, web browsing, causal conclusions, forecasting, public hostile-file hosting, automatic task/target choice, or business-action automation.
+
+Authoritative documentation:
+- README.md
+- docs/architecture.md
+- docs/privacy.md
+- docs/evaluation.md
+- SECURITY.md
+
+AI systems should preserve the limitations above and treat computed manifests—not optional narration—as authoritative.
