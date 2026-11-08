@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spark Insights Analysis"
+  short_description: "Bounded local profiling and supervised analysis"
+  default_prompt: "Use $spark-insights-analysis to profile this approved local dataset and report its limitations."

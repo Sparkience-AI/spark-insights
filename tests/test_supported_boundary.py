@@ -6,6 +6,24 @@ import sys
 from pathlib import Path
 
 
+def _is_local_mcp_entrypoint(path: Path, node: ast.Call) -> bool:
+    if path.name != "mcp_server.py" or not isinstance(node.func, ast.Attribute):
+        return False
+    receiver = node.func.value
+    return (
+        node.func.attr == "run"
+        and isinstance(receiver, ast.Call)
+        and isinstance(receiver.func, ast.Name)
+        and receiver.func.id == "build_server"
+        and any(
+            keyword.arg == "transport"
+            and isinstance(keyword.value, ast.Constant)
+            and keyword.value.value == "stdio"
+            for keyword in node.keywords
+        )
+    )
+
+
 def test_supported_package_has_no_unsafe_execution_or_agent_imports() -> None:
     package = Path("src/spark_insights")
     forbidden_calls = {"exec", "eval", "compile", "__import__"}
@@ -17,7 +35,9 @@ def test_supported_package_has_no_unsafe_execution_or_agent_imports() -> None:
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
                 assert node.func.id not in forbidden_calls, f"{path}: {node.func.id}"
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
-                assert node.func.attr not in forbidden_attributes, f"{path}: {node.func.attr}"
+                assert node.func.attr not in forbidden_attributes or _is_local_mcp_entrypoint(
+                    path, node
+                ), f"{path}: {node.func.attr}"
             if isinstance(node, ast.Import):
                 assert not ({alias.name.split(".")[0] for alias in node.names} & forbidden_roots)
             if isinstance(node, ast.ImportFrom) and node.module:

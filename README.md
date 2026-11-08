@@ -38,6 +38,12 @@ If a timestamp column defines ordering, add `--time-column ORDERDATE`. Invalid t
 
 Run `python main.py --help` for the stable option and resource-limit contract. Exit codes are 0 (success), 2 (input/argument), 3 (analysis), 4 (provider), and 10 (internal failure).
 
+## Local MCP and agent skill
+
+Set `SPARK_INSIGHTS_ALLOWED_ROOT` to the approved dataset directory and optionally `SPARK_INSIGHTS_OUTPUT_ROOT` to an artifact directory, then run `spark-insights-mcp`. The local stdio server exposes capability discovery, explicit profile/regression/classification runs, and completed-manifest retrieval. Tool callers cannot override the roots, pass absolute/traversing paths, invoke the legacy agent, execute code, browse, or trigger cloud narration.
+
+The repo-local `spark-insights-analysis` skill under `.agents/skills/` teaches compatible agents to confirm the task and target, compare every metric with its baseline, preserve limitations, and reject unsupported requests.
+
 ## Optional cloud narration (BYOK)
 
 Install providers:
@@ -89,6 +95,8 @@ XLSX archives have compressed, expanded-size, sheet, row, and column guards. Off
 - [Architecture and trust boundary](docs/architecture.md)
 - [Privacy and data flow](docs/privacy.md)
 - [Evaluation and limitations](docs/evaluation.md)
+- [Threat model](docs/threat-model.md)
+- [Release readiness](docs/release-readiness.md)
 - [Security policy](SECURITY.md)
 - [Contributing](CONTRIBUTING.md)
 
