@@ -26,7 +26,9 @@ The historical prototype, including its dynamic execution helpers, is quarantine
 
 Every run is assembled in a Windows-safe UTC/UUID staging directory and atomically renamed only
 after `manifest.json` is complete. Output artifacts use relative paths and hashes. The input source
-path is never persisted. Failed runs clean their exact staging directory and leave no partial run.
+path is never persisted. Failed runs attempt to remove their exact staging directory. If an OS lock
+or permission error blocks cleanup, only the hidden `.staging` directory can remain; it is never
+presented as a completed run.
 
 ## Future boundary
 

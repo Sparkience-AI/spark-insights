@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import pytest
+from openpyxl import Workbook
 
 import spark_insights.pipeline as pipeline
 from spark_insights.contracts import TaskSpec
@@ -107,6 +108,37 @@ def test_source_revision_changes_reproducibility_identity(tmp_path: Path) -> Non
     assert first.reproducibility_hash != second.reproducibility_hash
 
 
+def test_selected_worksheet_is_recorded_in_reproducibility_identity(tmp_path: Path) -> None:
+    source = tmp_path / "workbook.xlsx"
+    workbook = Workbook()
+    first_sheet = workbook.active
+    first_sheet.title = "First"
+    first_sheet.append(["value"])
+    first_sheet.append([1])
+    second_sheet = workbook.create_sheet("Second")
+    second_sheet.append(["value"])
+    second_sheet.append([2])
+    workbook.save(source)
+
+    first, _ = run_analysis(
+        source,
+        allowed_root=tmp_path,
+        output_root=tmp_path / "runs",
+        task=TaskSpec(),
+        sheet_name="First",
+    )
+    second, _ = run_analysis(
+        source,
+        allowed_root=tmp_path,
+        output_root=tmp_path / "runs",
+        task=TaskSpec(),
+        sheet_name="Second",
+    )
+    assert first.dataset.worksheet == "First"
+    assert second.dataset.worksheet == "Second"
+    assert first.reproducibility_hash != second.reproducibility_hash
+
+
 def test_failed_run_removes_staging_artifacts(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -126,3 +158,27 @@ def test_failed_run_removes_staging_artifacts(
             task=TaskSpec(),
         )
     assert list(output_root.iterdir()) == []
+
+
+def test_cleanup_blocker_never_exposes_a_completed_run(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    source = tmp_path / "data.csv"
+    source.write_text("value\n1\n2\n", encoding="utf-8")
+    output_root = tmp_path / "runs"
+
+    def fail_report(*args: object, **kwargs: object) -> None:
+        raise RuntimeError("simulated report failure")
+
+    monkeypatch.setattr(pipeline, "write_html_report", fail_report)
+    monkeypatch.setattr(pipeline.shutil, "rmtree", lambda *args, **kwargs: None)
+    with pytest.raises(RuntimeError, match="simulated report failure"):
+        run_analysis(
+            source,
+            allowed_root=tmp_path,
+            output_root=output_root,
+            task=TaskSpec(),
+        )
+    entries = list(output_root.iterdir())
+    assert len(entries) == 1
+    assert entries[0].name.startswith(".") and entries[0].name.endswith(".staging")

@@ -13,7 +13,7 @@ Spark Insights is a local-first, reproducible assisted data-analysis tool for CS
 - Preprocessing is fitted only on training data. Every model metric is shown beside a deterministic baseline.
 - Each successful run is atomically committed with a typed JSON result, portable HTML report,
   environment record, artifact hashes, result hash, and reproducibility identity. Failed staging
-  directories are removed automatically.
+  directories are removed on a best-effort basis.
 - Optional Gemini, OpenAI, or Anthropic narration receives only bounded aggregates—never rows, values, column names, file paths, or credentials.
 
 ## Install and run
@@ -74,8 +74,9 @@ Each successful run creates `runs/<UTC timestamp>-<random suffix>/` containing:
 
 The manifest contains no source path, dataset rows, API key, prompt, or narration input. Set
 `SPARK_INSIGHTS_SOURCE_REVISION` to an immutable commit or build identifier for fully traceable
-evidence; otherwise the manifest says `unavailable` and warns. Rejected and failed runs do not leave
-partial run directories.
+evidence; otherwise the manifest says `unavailable` and warns. Rejected and failed runs never create
+a completed run directory. If the operating system blocks cleanup, a hidden `.staging` directory may
+remain for manual removal.
 
 ## Supported scope and limitations
 

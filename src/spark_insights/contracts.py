@@ -23,6 +23,7 @@ class DatasetFingerprint:
     byte_count: int
     format: str
     encoding: str | None = None
+    worksheet: str | None = None
 
 
 @dataclass(frozen=True)

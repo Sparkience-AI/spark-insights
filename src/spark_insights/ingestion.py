@@ -69,6 +69,7 @@ def load_dataset(
     if len(source_bytes) != size or len(source_bytes) > limits.max_bytes:
         raise IngestionError("Input changed while it was being read")
     digest = hashlib.sha256(source_bytes).hexdigest()
+    selected_sheet: str | None = None
 
     try:
         if suffix == ".csv":
@@ -89,10 +90,10 @@ def load_dataset(
             try:
                 if len(workbook.sheetnames) > limits.max_sheets:
                     raise IngestionError(f"Workbook exceeds {limits.max_sheets} sheets")
-                selected = sheet_name or workbook.sheetnames[0]
-                if selected not in workbook.sheetnames:
+                selected_sheet = sheet_name or workbook.sheetnames[0]
+                if selected_sheet not in workbook.sheetnames:
                     raise IngestionError("Requested worksheet does not exist")
-                worksheet = workbook[selected]
+                worksheet = workbook[selected_sheet]
                 if worksheet.max_row > limits.max_rows + 1:
                     raise IngestionError(f"Dataset exceeds {limits.max_rows} rows")
                 if worksheet.max_column > limits.max_columns:
@@ -100,7 +101,7 @@ def load_dataset(
             finally:
                 workbook.close()
             frame = pd.read_excel(
-                BytesIO(source_bytes), sheet_name=selected, nrows=limits.max_rows + 1
+                BytesIO(source_bytes), sheet_name=selected_sheet, nrows=limits.max_rows + 1
             )
     except IngestionError:
         raise
@@ -123,5 +124,6 @@ def load_dataset(
             byte_count=size,
             format=suffix[1:],
             encoding=encoding if suffix == ".csv" else None,
+            worksheet=selected_sheet,
         ),
     )
