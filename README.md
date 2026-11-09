@@ -11,7 +11,9 @@ Spark Insights is a local-first, reproducible assisted data-analysis tool for CS
 - Inputs are read once, hashed, bounded, and kept immutable by interface.
 - Tasks, targets, exclusions, time semantics, missing-value policy, seed, and holdout are explicit.
 - Preprocessing is fitted only on training data. Every model metric is shown beside a deterministic baseline.
-- Each run has a collision-safe directory, typed JSON result, portable HTML report, environment record, and manifest with artifact hashes.
+- Each successful run is atomically committed with a typed JSON result, portable HTML report,
+  environment record, artifact hashes, result hash, and reproducibility identity. Failed staging
+  directories are removed on a best-effort basis.
 - Optional Gemini, OpenAI, or Anthropic narration receives only bounded aggregates—never rows, values, column names, file paths, or credentials.
 
 ## Install and run
@@ -66,10 +68,15 @@ Each successful run creates `runs/<UTC timestamp>-<random suffix>/` containing:
 
 - `analysis.json` — typed computed aggregates, metrics, warnings, and limitations;
 - `report.html` — self-contained deterministic report and metric comparison visualization;
-- `environment.json` — local runtime identity; and
-- `manifest.json` — input hash/size/format, confirmed task, seed, approvals, versions, and artifact hashes.
+- `environment.json` — method, source, runtime, and dependency identity; and
+- `manifest.json` — input hash/size/format, confirmed task, seed, approvals, versions, result and
+  reproducibility hashes, source revision, and artifact hashes.
 
-The manifest contains no source path, dataset rows, API key, prompt, or narration input. A rejected/failed run may leave an empty or partial isolated directory; it is never treated as complete without `manifest.json`.
+The manifest contains no source path, dataset rows, API key, prompt, or narration input. Set
+`SPARK_INSIGHTS_SOURCE_REVISION` to an immutable commit or build identifier for fully traceable
+evidence; otherwise the manifest says `unavailable` and warns. Rejected and failed runs never create
+a completed run directory. If the operating system blocks cleanup, a hidden `.staging` directory may
+remain for manual removal.
 
 ## Supported scope and limitations
 
@@ -86,7 +93,9 @@ Not supported yet:
 
 - causal claims, forecasting, clustering, arbitrary/custom code, web search, autonomous task/target selection;
 - production deployment, multi-user hosting, model persistence, arbitrary filesystem access;
-- the prototype's auto-generated PowerPoint and open-ended chart generation. These remain historical demo artifacts, not supported outputs.
+- the prototype's auto-generated PowerPoint and open-ended chart generation. These are quarantined
+  under `legacy/unrestricted_tools/` as historical source, are not importable as a root `tools`
+  package, and are not supported outputs.
 
 XLSX archives have compressed, expanded-size, sheet, row, and column guards. Office parsing still occurs in-process; do not use the alpha release as an adversarial public upload service.
 
@@ -100,7 +109,9 @@ XLSX archives have compressed, expanded-size, sheet, row, and column guards. Off
 - [Security policy](SECURITY.md)
 - [Contributing](CONTRIBUTING.md)
 
-The former unrestricted Smolagents implementation is isolated under `legacy/` and `tools/`. It is retained only for historical comparison, is not installed, and is never imported by `main.py` or the `spark_insights` package. Do not use it with sensitive or untrusted data.
+The former unrestricted Smolagents implementation is quarantined entirely under `legacy/`. It is
+retained only for historical comparison, is not installed, and is never imported by `main.py` or
+the `spark_insights` package. Do not use it with sensitive or untrusted data.
 
 ## Development
 

@@ -23,6 +23,7 @@ class DatasetFingerprint:
     byte_count: int
     format: str
     encoding: str | None = None
+    worksheet: str | None = None
 
 
 @dataclass(frozen=True)
@@ -96,11 +97,18 @@ class RunManifest:
     schema_version: str
     run_id: str
     created_at_utc: str
+    method_version: str
     package_version: str
+    source_revision: str
+    runtime_versions: dict[str, str]
+    dependency_versions: dict[str, str]
+    reproducibility_hash: str
+    result_hash: str
     dataset: DatasetFingerprint
     task: TaskSpec
     result: AnalysisResult
     approvals: dict[str, bool]
+    manifest_warnings: tuple[str, ...] = field(default_factory=tuple)
     artifacts: tuple[ArtifactRecord, ...] = field(default_factory=tuple)
     provider: str | None = None
     provider_model: str | None = None
