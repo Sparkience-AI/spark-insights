@@ -25,7 +25,9 @@ def test_mcp_profile_and_manifest_are_bounded(tmp_path: Path) -> None:
     assert result["result"]["limitations"]
     manifest = get_run_manifest(config, str(result["run_id"]))
     assert manifest["run_id"] == result["run_id"]
-    assert "source" not in json.dumps(manifest).lower()
+    serialized = json.dumps(manifest).lower()
+    assert str(tmp_path).lower() not in serialized
+    assert "data.csv" not in serialized
 
 
 def test_mcp_rejects_traversal_and_implicit_supervised_target(tmp_path: Path) -> None:

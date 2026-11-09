@@ -1,6 +1,11 @@
 """Deterministic Spark Insights analysis core."""
 
-__version__ = "0.2.0"
+from importlib.metadata import PackageNotFoundError, version
+
+try:
+    __version__ = version("spark-insights")
+except PackageNotFoundError:
+    __version__ = "uninstalled"
 
 from .pipeline import run_analysis
 

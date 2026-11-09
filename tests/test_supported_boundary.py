@@ -51,6 +51,11 @@ def test_compatibility_launcher_only_imports_supported_cli() -> None:
     assert "agent" not in imports
 
 
+def test_historical_dynamic_tools_are_quarantined() -> None:
+    assert not Path("tools").exists()
+    assert Path("legacy/unrestricted_tools/data_analysis.py").is_file()
+
+
 def test_clean_checkout_help_command() -> None:
     completed = subprocess.run(
         [sys.executable, "main.py", "--help"],

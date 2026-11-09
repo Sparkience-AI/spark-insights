@@ -4,11 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "spark-insights"
-version = "0.2.0"
+version = "0.3.0"
 description = "Local-first, reproducible assisted data analysis"
 readme = "README.md"
-requires-python = ">=3.11"
-license = { file = "LICENSE" }
+requires-python = ">=3.11,<3.14"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
   "mcp>=1.26,<2",
   "pandas>=2.2,<3",

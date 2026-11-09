@@ -3,7 +3,9 @@
 ## Verification gates
 
 - Tests, Ruff, strict mypy, locked resolution, source/wheel build, installed CLI/MCP smoke checks, and documentation discovery pass.
-- Adversarial fixtures cover traversal and symlink containment, bounded MCP arguments/manifests, malformed archives, expansion limits, missing targets, prompt-like cell content, provider failures, legacy import isolation, and run-manifest integrity.
+- Adversarial fixtures cover traversal and symlink containment, bounded MCP arguments/manifests,
+  malformed archives, expansion limits, missing targets, prompt-like cell content, provider failures,
+  legacy import isolation, atomic failure cleanup, and run-manifest identity/integrity.
 - Skill evals include positive routing, missing-input questions, unsupported arbitrary-code requests, and traversal refusal.
 - HTML output has semantic headings, tables, visible metric labels in addition to color, responsive viewport metadata, escaped values, and a keyboard/manual screen-reader spot check before a tagged release.
 
