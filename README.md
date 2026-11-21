@@ -1,5 +1,7 @@
 # Spark Insights
 
+![Spark Insights project cover](assets/spark-insights-cover.jpg)
+
 Spark Insights is a local-first, reproducible assisted data-analysis tool for CSV and XLSX files. It profiles data, runs an explicitly selected regression or classification baseline workflow, compares the result with a simple baseline, and produces machine-readable and portable HTML reports.
 
 **Status: alpha.** The deterministic profiling and supervised-analysis slice is supported. It is not an autonomous data scientist, a causal inference system, or a substitute for expert review.
